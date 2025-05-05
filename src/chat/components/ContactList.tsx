@@ -1,44 +1,49 @@
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQuery } from "@tanstack/react-query";
 import { NavLink } from "react-router";
 
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+import { getClients } from "@/fake-backend/fake-data";
+
 const ContactList = () => {
+  const { data: clients, isLoading } = useQuery({
+    queryKey: ["clients"],
+    queryFn: () => getClients(),
+    staleTime: 1000 * 60 * 5
+  });
+
   return (
-    <ScrollArea className="h-[calc(100vh-64px)]">
+    <ScrollArea className="h-[calc(100vh-120px)]">
       <div className="space-y-4 p-4">
         <div className="space-y-1">
           <h3 className="px-2 text-sm font-semibold">Contacts</h3>
           <div className="space-y-1">
-            <Button variant="secondary" className="w-full justify-start">
-              <div className="h-6 w-6 rounded-full bg-blue-500 mr-2 flex-shrink-0 flex items-center justify-center text-white text-xs">
-                G5
+            {isLoading && (
+              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground">
+                <div className="animate-pulse">Loading contacts...</div>
               </div>
-              G5 Customer
-            </Button>
-            <NavLink to="/chat/1" className="w-full flex items-center mt-3">
-              <div className="h-6 w-6 rounded-full bg-green-500 mr-2 flex-shrink-0 flex items-center justify-center text-white text-xs">
-                JD
-              </div>
-              John Doe
-            </NavLink>
-            <NavLink to="/chat/2" className="w-full flex items-center mt-3">
-              <div className="h-6 w-6 rounded-full bg-purple-500 mr-2 flex-shrink-0 flex items-center justify-center text-white text-xs">
-                AS
-              </div>
-              Alice Smith
-            </NavLink>
-            <Button variant="ghost" className="w-full justify-start">
-              <div className="h-6 w-6 rounded-full bg-yellow-500 mr-2 flex-shrink-0 flex items-center justify-center text-white text-xs">
-                RJ
-              </div>
-              Robert Johnson
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <div className="h-6 w-6 rounded-full bg-pink-500 mr-2 flex-shrink-0 flex items-center justify-center text-white text-xs">
-                EW
-              </div>
-              Emma Wilson
-            </Button>
+            )}
+            {clients?.map((client) => {
+              return (
+                <NavLink
+                  key={client.id}
+                  to={`/chat/${client.id}`}
+                  className={({ isActive }) =>
+                    `w-full flex items-center mt-3 transition-all duration-300 ${
+                      isActive &&
+                      "[&_span]:text-black bg-primary/10 pl-2 rounded-lg [&_span]:font-semibold [&_div]:bg-green-500 [&_div]:text-white [&_div]:font-bold"
+                    }`
+                  }
+                >
+                  <div className="h-7 w-7 rounded-full bg-gray-300 mr-2 flex-shrink-0 flex items-center font-semibold justify-center text-gray-500 text-xs">
+                    {client.name.charAt(0)}
+                    {client.name.split(" ")[1].charAt(0)}
+                  </div>
+                  <span className="text-gray-500">{client.name}</span>
+                </NavLink>
+              );
+            })}
           </div>
         </div>
         <div className="pt-4 border-t mt-4">
