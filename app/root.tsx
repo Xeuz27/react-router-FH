@@ -4,7 +4,7 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
+  ScrollRestoration
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -15,15 +15,17 @@ export const links: Route.LinksFunction = () => [
   {
     rel: "preconnect",
     href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
+    crossOrigin: "anonymous"
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
+    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+  }
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  // const navigation = useNavigation();
+  // const isNavigating = !!navigation.location;
   return (
     <html lang="en">
       <head>
@@ -33,6 +35,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        {/* global loader fallback */}
+        {/* {isNavigating ? (
+          <div className="flex h-screen items-center justify-center bg-gray-100">
+            <div className="text-center">
+              <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-t-4 border-blue-500"></div>
+              <p className="text-xl text-gray-600">Cargando...</p>
+            </div>
+          </div>
+        ) : ( */}
+        {/* )} */}
         {children}
         <ScrollRestoration />
         <Scripts />

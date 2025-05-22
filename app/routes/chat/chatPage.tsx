@@ -3,11 +3,18 @@ import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Textarea } from "~/components/ui/textarea";
+import { sleep } from "~/lib/utils";
+import type { Route } from "./+types/chatPage";
 
 interface Message {
   role: "agent" | "user";
   content: string;
   timestamp: string;
+}
+export async function loader({ params }: Route.LoaderArgs) {
+  // console.log({ params });
+  await sleep(200);
+  return { hola: "mundo" };
 }
 
 export default function ChatPage() {

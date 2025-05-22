@@ -1,3 +1,4 @@
+import { NavLink } from "react-router";
 import logoDark from "./logo-dark.svg";
 import logoLight from "./logo-light.svg";
 
@@ -24,6 +25,12 @@ export function Welcome() {
             <p className="leading-6 text-gray-700 dark:text-gray-200 text-center">
               What&apos;s next?
             </p>
+            <NavLink
+              className="font-semibold text-black border border-black py-2 px-8"
+              to={"link"}
+            >
+              link
+            </NavLink>
             <ul>
               {resources.map(({ href, text, icon }) => (
                 <li key={href}>
