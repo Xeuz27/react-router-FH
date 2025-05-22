@@ -99,10 +99,12 @@ export default function testingPage({
           className="bg-blue-500 text-white rounded-md p-2 disabled:opacity-50"
           type="submit"
         >
-          {/* {(props) => {
+          {/*  renderizar una funcion solo es valido como un hijo de un NavLink de react router */}
+          {/* {({isSubmiting}) => {
             console.log(props);
-            return <span>Submit</span>;
-          }} */}
+            return 
+            }} */}
+          <span>Submit</span>;
         </button>
       </Form>
     </div>

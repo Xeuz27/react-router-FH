@@ -1,15 +1,71 @@
-import { Link } from "react-router";
+import {
+  data,
+  Form,
+  Link,
+  redirect,
+  replace,
+  useNavigation
+} from "react-router";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { cn } from "~/lib/utils";
+import { commitSession, getSession } from "~/sessions.server";
+import type { Route } from "./+types/loginPage";
 
-const loginPage = () => {
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  if (session.get("userId")) {
+    return replace("/chat");
+  }
+  return data(
+    { error: session.get("error") },
+    {
+      headers: {
+        "Set-Cookie": await commitSession(session)
+      }
+    }
+  );
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const form = await request.formData();
+  const name = form.get("name");
+
+  // if (userId == null) { esto es eso de abajo
+  if (name === "algo@algo.com") {
+    //   // Redirect back to the login page with errors.
+    session.flash("error", "correo invalido");
+    return redirect("/auth", {
+      headers: {
+        "Set-Cookie": await commitSession(session)
+      }
+    });
+  }
+
+  // const userId = await validateCredentials(username, password);
+  session.set("userId", "u1-12345");
+  session.set("token", "TokenRandom");
+
+  // Login succeeded, send them to the home page.
+  return redirect("/chat", {
+    headers: {
+      "Set-Cookie": await commitSession(session)
+    }
+  });
+}
+
+const loginPage = ({ loaderData }: Route.ComponentProps) => {
+  const navigation = useNavigation();
+
   return (
     <div className="flex flex-col gap-6">
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          {/* action="/auth/testing" */}
+          <Form method="post" className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -20,11 +76,16 @@ const loginPage = () => {
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  className={cn(loaderData?.error && "border border-red-600")}
                   id="email"
                   type="email"
+                  name="name"
                   placeholder="m@example.com"
                   required
                 />
+                <span className="font-normal text-red-500 text-sm">
+                  {loaderData?.error}
+                </span>
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
@@ -36,10 +97,19 @@ const loginPage = () => {
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="age" type="password" required />
               </div>
               <Button type="submit" className="w-full">
-                Login
+                {navigation.formAction === "/auth?index" ? (
+                  <>
+                    <div className="h-4 w-4 ml-4 animate-spin rounded-full border-t-4 border-white"></div>
+                    <span className="text-muted font-semibold">
+                      Cargando...
+                    </span>
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -85,7 +155,7 @@ const loginPage = () => {
                 </Link>
               </div>
             </div>
-          </form>
+          </Form>
           <div className="relative hidden bg-muted md:block">
             <img
               src="https://addm5taesy21g6y4k.lite.vusercontent.net/placeholder.svg"
