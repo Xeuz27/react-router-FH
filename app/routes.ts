@@ -14,5 +14,7 @@ export default [
     // child routes
     index("routes/chat/noChatSelectedPage.tsx"),
     route(":contactId", "routes/chat/chatPage.tsx")
-  ])
+  ]),
+  // Products
+  route("products/:name", "routes/productPage.tsx")
 ] satisfies RouteConfig;

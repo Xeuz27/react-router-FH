@@ -10,6 +10,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { loginUser } from "~/fake-backend/fake-data";
 import { cn } from "~/lib/utils";
 import { commitSession, getSession } from "~/sessions.server";
 import type { Route } from "./+types/loginPage";
@@ -44,10 +45,11 @@ export async function action({ request }: Route.ActionArgs) {
       }
     });
   }
-
+  let user = await loginUser();
   // const userId = await validateCredentials(username, password);
-  session.set("userId", "u1-12345");
-  session.set("token", "TokenRandom");
+  session.set("userId", user.id);
+  session.set("token", user.token);
+  session.set("name", user.name);
 
   // Login succeeded, send them to the home page.
   return redirect("/chat", {

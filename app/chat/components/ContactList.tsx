@@ -17,27 +17,27 @@ const ContactList = ({ clients }: Props) => {
 
   return (
     <>
-      <h3 className="p-2 text-sm font-semibold">Contacts</h3>
+      <h3 className="p-4 py-2 text-sm font-semibold">Contacts</h3>
       <ScrollArea className="grow h-[10px] pr-1">
         <div className="space-y-1 px-4 flex flex-col items-end">
           {clients.map((client) => {
             return (
               <NavLink
                 key={client.id}
-                className={({ isActive, isPending }) =>
+                className={({ isActive }) =>
                   cn(
                     buttonVariants({ variant: "ghost" }),
                     "w-full justify-start pl-0 border bg-red-100 border-border rounded-full flex items-center transition-all duration-500",
                     isActive
-                      ? `[&_div]:bg-green-200 [&_div]:text-black [&_div]:border-accent-foreground/40
+                      ? `[&_div]:bg-green-200 [&_div]:text-black [&_div]:border-accent-foreground/40 pointer-events-none
                          [&_span]:text-black [&_span]:font-bold w-[95%]`
                       : "[&_span]:text-gray-500"
                   )
                 }
                 to={`${client.id}`}
               >
-                {({ isPending }) => {
-                  return isPending ? (
+                {({ isPending, isActive }) => {
+                  return isPending && isActive === false ? (
                     <>
                       <div className="h-4 w-4 ml-4 animate-spin rounded-full border-t-4 border-blue-500"></div>
                       <span className="text-muted font-semibold">
@@ -46,7 +46,7 @@ const ContactList = ({ clients }: Props) => {
                     </>
                   ) : (
                     <>
-                      <div className="h-7 w-7 rounded-full bg-muted border border-accent-foreground/20 mr-2 flex-shrink-0 flex items-center justify-center text-accent-foreground/50 text-xs">
+                      <div className="h-7 w-7 rounded-full font-medium bg-muted border border-accent-foreground/20 mr-2 flex-shrink-0 flex items-center justify-center text-accent-foreground/50 text-xs">
                         {client.name.charAt(0)}
                         {client.name.split(" ")[1].charAt(0)}
                       </div>

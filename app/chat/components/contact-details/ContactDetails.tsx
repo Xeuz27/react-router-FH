@@ -1,24 +1,21 @@
 // import { getClient } from "@/fake-backend/fake-data";
 // import { useQuery } from "@tanstack/react-query";
 
+import { useLoaderData, useNavigation, useParams } from "react-router";
 import ContactInfo from "./ContactInfo";
 import ContactInfoSkeleton from "./ContactSkeleton";
 import NoContactSelected from "./NoContactSelected";
 
 const ContactDetails = () => {
-  const clientId = false;
-  const isLoading = true;
-  const Client = { id: "client" };
-  // const { clientId } = useParams();
-  // const { data: Client, isLoading } = useQuery({
-  //   queryKey: [`clientId-${clientId}`],
-  //   queryFn: () => getClient(clientId!),
-  //   enabled: !!clientId
-  // });
+  const navigation = useNavigation();
+  const { contactId } = useParams();
 
-  if (!clientId) return <NoContactSelected />;
-  if (isLoading && !Client) return <ContactInfoSkeleton />;
-  if (Client) return <ContactInfo Client={Client} />;
+  const { client } = useLoaderData();
+
+  if (contactId !== client.id && navigation.state === "loading")
+    return <ContactInfoSkeleton />;
+  if (client !== null) return <ContactInfo Client={client} />;
+  if (!contactId && navigation.state === "idle") return <NoContactSelected />;
 };
 
 export default ContactDetails;
